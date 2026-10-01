@@ -19,6 +19,9 @@ describe('routes', () => {
     ['/', 'home', 'Veshichkin'],
     ['/catalog', 'catalog', 'Каталог'],
     ['/catalog/categories/invalid', 'category', 'Категория не найдена'],
+    ['/catalog/items/new', 'item-create', 'Добавить вещь'],
+    ['/catalog/items/invalid', 'item-details', 'Вещь не найдена'],
+    ['/catalog/items/invalid/edit', 'item-edit', 'Вещь не найдена'],
     ['/revision', 'revision', 'Ревизия'],
     ['/unknown/nested-page', 'not-found', 'Страница не найдена'],
   ])('renders %s', async (path, name, heading) => {

@@ -58,6 +58,7 @@ function names(ids: number[] | undefined, lookup: Map<number, string>) {
         </ol>
       </nav>
       <h1>{{ category.name }}</h1>
+      <div class="item-actions"><RouterLink :to="`/catalog/items/new?category_id=${category.id}`">Добавить вещь</RouterLink></div>
       <section v-if="category.children?.length" aria-label="Подкатегории">
         <h2>Подкатегории</h2>
         <ul class="category-links">
@@ -73,7 +74,7 @@ function names(ids: number[] | undefined, lookup: Map<number, string>) {
         <p v-else-if="!items.data.value?.length">В этой категории пока нет вещей.</p>
         <ul v-else class="catalog-items">
           <li v-for="item in items.data.value" :key="item.id" class="catalog-item">
-            <h3>{{ item.name }}</h3>
+            <h3><RouterLink :to="`/catalog/items/${item.id}`">{{ item.name }}</RouterLink></h3>
             <dl>
               <div><dt>Учёт</dt><dd>{{ trackingNames[item.tracking_mode] }}</dd></div>
               <div><dt>Количество</dt><dd>{{ item.quantity }}</dd></div>

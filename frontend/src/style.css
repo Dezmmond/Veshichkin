@@ -142,3 +142,90 @@ a:focus-visible {
   margin: 0;
   min-width: 0;
 }
+
+.item-form fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0 0 1rem;
+  min-width: 0;
+}
+
+.item-form label, .item-form summary {
+  display: block;
+  margin-top: 0.75rem;
+}
+
+.item-form input:not([type="checkbox"]), .item-form select, .item-form textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 2.75rem;
+  box-sizing: border-box;
+  padding: 0.5rem;
+  font: inherit;
+}
+
+.item-form textarea {
+  resize: vertical;
+}
+
+.item-form .item-choices label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  margin: 0;
+}
+
+.item-form summary {
+  min-height: 2.75rem;
+  padding: 0.5rem 0;
+  cursor: pointer;
+}
+
+.item-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.item-actions a, .item-actions button, .catalog-item h3 a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.5rem;
+  font: inherit;
+}
+
+.item-actions button {
+  background: #174e8c;
+  color: #fff;
+  border: 0;
+  border-radius: 0.25rem;
+}
+
+.item-actions button:disabled {
+  opacity: 0.65;
+}
+
+.item-details dd {
+  margin: 0 0 0.75rem;
+}
+
+.item-details dt {
+  font-weight: 600;
+}
+
+.item-details pre, .item-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}

@@ -80,7 +80,8 @@ describe('category screen', () => {
     expect(card.findAll('dd').map((entry) => entry.text())).toEqual([
       'Группа', '7', 'Хорошее', 'Прогулки, Работа', 'Тёплый', 'Brand', 'Model', 'Синий', 'M', 'Хлопок',
     ])
-    expect(card.find('a').exists()).toBe(false)
+    expect(card.get('a').attributes('href')).toBe('/catalog/items/1')
+    expect(wrapper.get('a[href="/catalog/items/new?category_id=20"]').text()).toBe('Добавить вещь')
   })
   it('updates item filters and breadcrumb when route category changes, reusing the tree', async () => {
     const request = mockCatalog()
