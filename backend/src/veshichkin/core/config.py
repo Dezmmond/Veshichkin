@@ -1,4 +1,5 @@
 from functools import lru_cache
+from pathlib import Path
 
 from pydantic import PostgresDsn, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -10,6 +11,7 @@ class Settings(BaseSettings):
     application_name: str = "Veshichkin"
     environment: str = "development"
     debug: bool = False
+    static_dir: Path | None = None
     database_url: PostgresDsn = PostgresDsn(
         "postgresql+psycopg://veshichkin@localhost:5432/veshichkin"
     )
