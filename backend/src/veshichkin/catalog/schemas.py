@@ -5,6 +5,7 @@ from pydantic import BaseModel, ConfigDict, Field, JsonValue, field_validator, m
 
 Quantity = Annotated[int, Field(strict=True, ge=0, le=2147483647)]
 TrackingMode = Literal["individual", "grouped"]
+RelationId = Annotated[int, Field(strict=True, gt=0)]
 
 
 class ItemScalars(BaseModel):
@@ -28,7 +29,19 @@ class ItemScalars(BaseModel):
         return value.strip() if isinstance(value, str) else value
 
 
-class ItemCreate(ItemScalars):
+class ItemRelations(ItemScalars):
+    purpose_ids: list[RelationId] = Field(default_factory=list)
+    climate_ids: list[RelationId] = Field(default_factory=list)
+
+    @field_validator("purpose_ids", "climate_ids")
+    @classmethod
+    def reject_duplicates(cls, values: list[int]) -> list[int]:
+        if len(values) != len(set(values)):
+            raise ValueError("duplicate relation IDs are not allowed")
+        return values
+
+
+class ItemCreate(ItemRelations):
     name: str = Field(min_length=1)
     category_id: int
     condition_id: int
@@ -47,7 +60,7 @@ class ItemCreate(ItemScalars):
         return self
 
 
-class ItemPatch(ItemScalars):
+class ItemPatch(ItemRelations):
     name: str | None = Field(default=None, min_length=1)
     category_id: int | None = None
     condition_id: int | None = None
@@ -81,3 +94,5 @@ class ItemResponse(BaseModel):
     is_active: bool
     created_at: datetime
     updated_at: datetime
+    purpose_ids: list[int] = Field(default_factory=list)
+    climate_ids: list[int] = Field(default_factory=list)

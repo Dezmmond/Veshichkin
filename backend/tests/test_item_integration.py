@@ -87,6 +87,8 @@ def test_create_commits_and_persists(
         "is_active",
         "created_at",
         "updated_at",
+        "purpose_ids",
+        "climate_ids",
     }
     assert data["created_at"] and data["updated_at"]
     with Session(engine) as fresh:

@@ -105,6 +105,7 @@ def mock_client() -> Iterator[tuple[TestClient, Mock]]:
         updated_at=now,
     )
     session.get.return_value = row
+    session.execute.return_value = []
     app = create_app()
     app.dependency_overrides[get_session] = lambda: session
     with TestClient(app) as client:
@@ -157,6 +158,18 @@ def test_unexpected_integrity_error_is_safe(
 def test_openapi_item_contract() -> None:
     schema = create_app().openapi()
     assert set(schema["paths"]["/api/items"]) == {"get", "post"}
-    assert set(schema["paths"]["/api/items/{item_id}"]) == {"get", "patch"}
+    assert set(schema["paths"]["/api/items/{item_id}"]) == {"get", "patch", "delete"}
     patch = schema["components"]["schemas"]["ItemPatch"]["properties"]
     assert not {"tracking_mode", "is_active", "purposes", "climates"} & patch.keys()
+    parameters = schema["paths"]["/api/items"]["get"]["parameters"]
+    assert {parameter["name"] for parameter in parameters} == {
+        "category_id",
+        "condition_id",
+        "purpose_id",
+        "climate_id",
+        "tracking_mode",
+    }
+    for name in ("ItemCreate", "ItemPatch", "ItemResponse"):
+        assert {"purpose_ids", "climate_ids"} <= schema["components"]["schemas"][name][
+            "properties"
+        ].keys()
