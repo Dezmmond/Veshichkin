@@ -7,7 +7,7 @@ const { isPending, isError } = useHealthQuery()
 <template>
   <section>
     <h1>Veshichkin</h1>
-    <p>Проект на этапе создания базового каркаса. Разделы каталога и ревизии пока доступны как заглушки.</p>
+    <p>В каталоге доступны категории и список вещей. Раздел ревизии будет доступен на следующем этапе разработки.</p>
     <p role="status" aria-live="polite">
       <template v-if="isPending">Backend: проверка…</template>
       <template v-else-if="isError">Backend: недоступен</template>

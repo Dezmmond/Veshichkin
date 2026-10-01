@@ -6,9 +6,10 @@ import { routes } from './index'
 import { apiClient } from '../api/client'
 
 beforeEach(() => {
-  vi.spyOn(apiClient, 'GET').mockResolvedValue({
-    data: { status: 'ok' }, response: new Response(null, { status: 200 }),
-  })
+  vi.spyOn(apiClient, 'GET').mockImplementation(async (path) => ({
+    data: path === '/api/health' ? { status: 'ok' as const } : [],
+    response: new Response(null, { status: 200 }),
+  }))
 })
 
 afterEach(() => vi.restoreAllMocks())
@@ -17,6 +18,7 @@ describe('routes', () => {
   it.each([
     ['/', 'home', 'Veshichkin'],
     ['/catalog', 'catalog', 'Каталог'],
+    ['/catalog/categories/invalid', 'category', 'Категория не найдена'],
     ['/revision', 'revision', 'Ревизия'],
     ['/unknown/nested-page', 'not-found', 'Страница не найдена'],
   ])('renders %s', async (path, name, heading) => {

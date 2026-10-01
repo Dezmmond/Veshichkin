@@ -73,3 +73,72 @@ a:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 2px;
 }
+
+.category-links, .catalog-items, .catalog-breadcrumb ol {
+  list-style: none;
+  padding: 0;
+}
+
+.category-links a {
+  display: block;
+  min-height: 2.75rem;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+  overflow-wrap: anywhere;
+}
+
+.catalog-breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.catalog-breadcrumb li {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.catalog-breadcrumb li + li::before {
+  content: '/';
+  margin-right: 0.25rem;
+}
+
+.catalog-breadcrumb a {
+  display: inline-block;
+  padding: 0.5rem 0.25rem;
+  min-height: 2.75rem;
+}
+
+.catalog-item {
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+  overflow-wrap: anywhere;
+}
+
+.catalog-item h3 {
+  margin: 0 0 0.5rem;
+}
+
+.catalog-item dl {
+  margin: 0;
+}
+
+.catalog-item dl > div {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 0.5rem;
+}
+
+.catalog-item dt {
+  font-weight: 600;
+}
+
+.catalog-item dd {
+  margin: 0;
+  min-width: 0;
+}

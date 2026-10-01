@@ -9,9 +9,10 @@ import { routes } from './router'
 import { apiClient } from './api/client'
 
 beforeEach(() => {
-  vi.spyOn(apiClient, 'GET').mockResolvedValue({
-    data: { status: 'ok' }, response: new Response(null, { status: 200 }),
-  })
+  vi.spyOn(apiClient, 'GET').mockImplementation(async (path) => ({
+    data: path === '/api/health' ? { status: 'ok' as const } : [],
+    response: new Response(null, { status: 200 }),
+  }))
 })
 
 afterEach(() => vi.restoreAllMocks())
