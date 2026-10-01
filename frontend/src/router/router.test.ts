@@ -1,7 +1,17 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
 import { mount } from '@vue/test-utils'
 import { RouterView, createMemoryHistory, createRouter } from 'vue-router'
 import { routes } from './index'
+import { apiClient } from '../api/client'
+
+beforeEach(() => {
+  vi.spyOn(apiClient, 'GET').mockResolvedValue({
+    data: { status: 'ok' }, response: new Response(null, { status: 200 }),
+  })
+})
+
+afterEach(() => vi.restoreAllMocks())
 
 describe('routes', () => {
   it.each([
@@ -13,12 +23,16 @@ describe('routes', () => {
     const router = createRouter({ history: createMemoryHistory(), routes })
     await router.push(path)
     await router.isReady()
-    const wrapper = mount(RouterView, { global: { plugins: [router] } })
+    const queryClient = new QueryClient()
+    const wrapper = mount(RouterView, {
+      global: { plugins: [router, [VueQueryPlugin, { queryClient }]] },
+    })
     try {
       expect(router.currentRoute.value.name).toBe(name)
       expect(wrapper.get('h1').text()).toBe(heading)
     } finally {
       wrapper.unmount()
+      queryClient.clear()
     }
   })
 })

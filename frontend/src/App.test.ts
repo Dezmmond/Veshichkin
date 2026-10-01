@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent } from 'vue'
 import { flushPromises, mount } from '@vue/test-utils'
 import { createMemoryHistory, createRouter } from 'vue-router'
@@ -6,6 +6,15 @@ import { QueryClient, VueQueryPlugin, useQueryClient } from '@tanstack/vue-query
 import PrimeVue, { usePrimeVue } from 'primevue/config'
 import App from './App.vue'
 import { routes } from './router'
+import { apiClient } from './api/client'
+
+beforeEach(() => {
+  vi.spyOn(apiClient, 'GET').mockResolvedValue({
+    data: { status: 'ok' }, response: new Response(null, { status: 200 }),
+  })
+})
+
+afterEach(() => vi.restoreAllMocks())
 
 describe('application shell', () => {
   it('mounts with navigation links and changes the active view', async () => {
@@ -68,7 +77,10 @@ describe('application shell', () => {
     const router = createRouter({ history: createMemoryHistory(), routes })
     await router.push('/missing')
     await router.isReady()
-    const wrapper = mount(App, { global: { plugins: [router] } })
+    const queryClient = new QueryClient()
+    const wrapper = mount(App, {
+      global: { plugins: [router, [VueQueryPlugin, { queryClient }]] },
+    })
     try {
       expect(wrapper.get('h1').text()).toBe('Страница не найдена')
       await wrapper.get('main a[href="/"]').trigger('click')
@@ -77,6 +89,7 @@ describe('application shell', () => {
       expect(wrapper.get('h1').text()).toBe('Veshichkin')
     } finally {
       wrapper.unmount()
+      queryClient.clear()
     }
   })
 })
