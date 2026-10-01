@@ -157,6 +157,17 @@ ENV/
 env.bak/
 venv.bak/
 
+# Frontend
+node_modules/
+coverage/
+
+# IDE and operating system
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
 # Spyder project settings
 .spyderproject
 .spyproject
@@ -171,6 +182,9 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# Ruff
+.ruff_cache/
 
 # Pyre type checker
 .pyre/
