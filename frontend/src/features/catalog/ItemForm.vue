@@ -5,7 +5,7 @@ import type { components } from '../../api/generated/schema'
 import type { ItemCreate, ItemPatch } from '../../api/items'
 import { useCategoriesQuery } from '../../api/categories'
 import { useConditionsQuery, usePurposesQuery, useClimatesQuery } from '../../api/referenceData'
-import { findCategoryById } from './categoryTree'
+import { findCategoryById, flattenCategories } from './categoryTree'
 
 const props = defineProps<{
   item?: components['schemas']['ItemResponse']; categoryId?: number; pending: boolean; error: boolean
@@ -35,11 +35,7 @@ const optionalFields = [ ['brand', 'Бренд'], ['model', 'Модель'], ['c
   ['size', 'Размер'], ['material', 'Материал'], ['notes', 'Заметки'] ] as const
 const extra = ref(props.item ? JSON.stringify(props.item.extra_attributes, null, 2) : '')
 const validation = ref('')
-function flatten(tree: components['schemas']['CategoryTree'][], depth = 0): { id: number; label: string }[] {
-  return tree.flatMap((entry) => [{ id: entry.id, label: `${'↳ '.repeat(depth)}${entry.name}` },
-    ...flatten(entry.children ?? [], depth + 1)])
-}
-const options = computed(() => flatten(categories.data.value ?? []))
+const options = computed(() => flattenCategories(categories.data.value ?? []))
 const cancel = computed(() => props.item ? `/catalog/items/${props.item.id}`
   : preselected.value ? `/catalog/categories/${preselected.value}` : '/catalog')
 

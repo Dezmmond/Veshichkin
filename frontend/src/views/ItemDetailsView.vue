@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
-import { useItemQuery } from '../api/items'
+import { useItemQuery, useRemoveItemMutation } from '../api/items'
 import { useCategoriesQuery } from '../api/categories'
 import { useConditionsQuery, usePurposesQuery, useClimatesQuery } from '../api/referenceData'
 import { findCategoryById, parseCategoryId } from '../features/catalog/categoryTree'
@@ -9,6 +9,16 @@ import { findCategoryById, parseCategoryId } from '../features/catalog/categoryT
 const route = useRoute()
 const id = computed(() => parseCategoryId(route.params.itemId))
 const query = useItemQuery(id)
+const remove = useRemoveItemMutation()
+const confirming = ref(false)
+watch(id, () => { confirming.value = false; remove.reset() })
+async function confirmRemoval() {
+  if (id.value === undefined || remove.isPending.value) return
+  try {
+    await remove.mutateAsync(id.value)
+    confirming.value = false
+  } catch { /* Safe error is rendered below. */ }
+}
 const item = query.data
 const enabled = computed(() => !!item.value)
 const categories = useCategoriesQuery(enabled)
@@ -55,6 +65,18 @@ const optionalFields = [ ['brand', 'Бренд'], ['model', 'Модель'], ['c
         <RouterLink :to="`/catalog/items/${item.id}/edit`">Редактировать</RouterLink>
         <RouterLink to="/catalog">Вернуться в каталог</RouterLink>
       </div>
+      <template v-if="item.is_active">
+        <button v-if="!confirming" class="management-action" type="button" @click="confirming = true; remove.reset()">Убрать из каталога</button>
+        <section v-else class="confirmation" aria-label="Подтверждение удаления из каталога">
+          <p>Убрать «{{ item.name }}» из текущего каталога?</p>
+          <p>Запись и её данные сохранятся.</p>
+          <div class="item-actions">
+            <button type="button" :disabled="remove.isPending.value" @click="confirming = false; remove.reset()">Отмена</button>
+            <button type="button" :disabled="remove.isPending.value" @click="confirmRemoval">{{ remove.isPending.value ? 'Убираем…' : 'Убрать' }}</button>
+          </div>
+        </section>
+        <p v-if="remove.isError.value" role="alert">Не удалось убрать вещь из каталога.</p>
+      </template>
     </template>
   </section>
 </template>

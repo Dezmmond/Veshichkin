@@ -58,6 +58,20 @@ export function useUpdateItemMutation() {
     } })
 }
 
+export async function removeItem(id: number) {
+  const { response } = await apiClient.DELETE('/api/items/{item_id}', { params: { path: { item_id: id } } })
+  if (!response.ok) throw new Error('Не удалось убрать вещь из каталога.')
+  return id
+}
+
+export function useRemoveItemMutation() {
+  const client = useQueryClient()
+  return useMutation({ mutationFn: removeItem, onSuccess: async (id) => {
+    await Promise.all([client.invalidateQueries({ queryKey: ['items'] }),
+      client.invalidateQueries({ queryKey: itemQueryKey(id) })])
+  } })
+}
+
 export const itemsQueryKey = (filters: ItemFilters) => ['items', filters] as const
 
 export function useItemsQuery(

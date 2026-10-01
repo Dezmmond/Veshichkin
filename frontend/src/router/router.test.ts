@@ -19,6 +19,8 @@ describe('routes', () => {
     ['/', 'home', 'Veshichkin'],
     ['/catalog', 'catalog', 'Каталог'],
     ['/catalog/categories/invalid', 'category', 'Категория не найдена'],
+    ['/catalog/categories/new', 'category-create', 'Добавить категорию'],
+    ['/catalog/categories/invalid/edit', 'category-edit', 'Категория не найдена'],
     ['/catalog/items/new', 'item-create', 'Добавить вещь'],
     ['/catalog/items/invalid', 'item-details', 'Вещь не найдена'],
     ['/catalog/items/invalid/edit', 'item-edit', 'Вещь не найдена'],

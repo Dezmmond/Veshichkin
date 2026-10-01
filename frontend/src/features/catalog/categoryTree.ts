@@ -2,6 +2,11 @@ import type { components } from '../../api/generated/schema'
 
 type Category = components['schemas']['CategoryTree']
 
+export function flattenCategories(tree: Category[], depth = 0): { id: number; label: string }[] {
+  return tree.flatMap((entry) => [{ id: entry.id, label: `${'↳ '.repeat(depth)}${entry.name}` },
+    ...flattenCategories(entry.children ?? [], depth + 1)])
+}
+
 export function findCategoryPath(tree: Category[], id: number): Category[] | undefined {
   for (const category of tree) {
     if (category.id === id) return [category]

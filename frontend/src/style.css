@@ -229,3 +229,33 @@ a:focus-visible {
   overflow: hidden;
   clip-path: inset(50%);
 }
+
+.catalog-filters {
+  min-width: 0;
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+}
+
+.catalog-filters label, .catalog-filters select {
+  display: block;
+  width: 100%;
+}
+
+.catalog-filters select, .catalog-filters button, .management-action {
+  min-height: 2.75rem;
+  padding: 0.5rem;
+  font: inherit;
+  max-width: 100%;
+}
+
+.catalog-filters select {
+  margin-bottom: 0.75rem;
+  min-width: 0;
+}
+
+.confirmation, .category-deletion {
+  margin-top: 1.5rem;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+}

@@ -46,7 +46,7 @@ describe('catalog root', () => {
     await vi.waitFor(() => expect(wrapper.findAll('.category-links a')).toHaveLength(2))
     expect(wrapper.findAll('.category-links a').map((link) => [link.text(), link.attributes('href')]))
       .toEqual([['Корень A', '/catalog/categories/10'], ['Корень D', '/catalog/categories/40']])
-    expect(wrapper.text()).not.toContain('Ветка B')
+    expect(wrapper.get('.category-links').text()).not.toContain('Ветка B')
   })
   it('shows empty categories', async () => {
     mockCatalog({ emptyRoots: true })
