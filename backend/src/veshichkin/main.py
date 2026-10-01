@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
+from veshichkin.catalog.router import router as catalog_router
 from veshichkin.categories.router import router as categories_router
 from veshichkin.core.config import Settings, get_settings
 from veshichkin.core.errors import ApplicationError, application_error_handler
@@ -27,6 +28,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     application.include_router(router, prefix="/api")
     application.include_router(categories_router, prefix="/api")
     application.include_router(reference_router, prefix="/api")
+    application.include_router(catalog_router, prefix="/api")
     if settings.static_dir is not None:
         application.mount("/", SPAStaticFiles(directory=settings.static_dir, html=True))
     return application
