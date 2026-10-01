@@ -1,10 +1,22 @@
 import ast
 import importlib.util
+from io import StringIO
 from pathlib import Path
 from unittest.mock import Mock
 
 import pytest
-from sqlalchemy import CheckConstraint, DateTime, Index, MetaData, Table, UniqueConstraint
+from alembic.migration import MigrationContext
+from alembic.operations import Operations
+from sqlalchemy import (
+    Boolean,
+    CheckConstraint,
+    Column,
+    DateTime,
+    Index,
+    MetaData,
+    Table,
+    UniqueConstraint,
+)
 from sqlalchemy.dialects import postgresql
 
 from veshichkin.db import models
@@ -51,6 +63,42 @@ def test_item_tracking_and_quantity_constraints() -> None:
     assert not table.c.tracking_mode.nullable
     assert not table.c.quantity.nullable
     assert not table.c.category_id.nullable
+
+
+def test_item_active_defaults_and_no_boolean_index() -> None:
+    table = models.Item.__table__
+    column = table.c.is_active
+    assert isinstance(column.type, Boolean)
+    assert not column.nullable
+    assert column.default is not None and column.default.arg is True
+    assert column.server_default is not None and str(column.server_default.arg) == "true"
+    assert all(tuple(index.columns.keys()) != ("is_active",) for index in table.indexes)
+
+
+def test_item_active_migration_upgrade_and_downgrade_sql(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    spec = importlib.util.spec_from_file_location(
+        "item_active_migration", BACKEND / "alembic/versions/0003_item_is_active.py"
+    )
+    assert spec is not None and spec.loader is not None
+    migration = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(migration)
+    assert migration.revision == "0003_item_is_active"
+    assert migration.down_revision == "0002_reference_data"
+    output = StringIO()
+    context = MigrationContext.configure(
+        dialect_name="postgresql", opts={"as_sql": True, "output_buffer": output}
+    )
+    monkeypatch.setattr(migration, "op", Operations(context))
+    migration.upgrade()
+    assert output.getvalue().strip() == (
+        "ALTER TABLE items ADD COLUMN is_active BOOLEAN DEFAULT true NOT NULL;"
+    )
+    output.seek(0)
+    output.truncate()
+    migration.downgrade()
+    assert output.getvalue().strip() == "ALTER TABLE items DROP COLUMN is_active;"
 
 
 def test_measurement_singleton_and_positive_values() -> None:
@@ -184,7 +232,7 @@ def test_production_source_never_calls_create_all() -> None:
         ), path
 
 
-def test_initial_migration_matches_metadata_and_drops_in_dependency_order(
+def test_schema_migrations_match_metadata_and_initial_drops_in_dependency_order(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     spec = importlib.util.spec_from_file_location(
@@ -208,6 +256,19 @@ def test_initial_migration_matches_metadata_and_drops_in_dependency_order(
     monkeypatch.setattr(migration.op, "f", lambda name: name)
     migration.upgrade()
     assert set(migrated.tables) == TABLES
+
+    spec = importlib.util.spec_from_file_location(
+        "item_active_migration", BACKEND / "alembic/versions/0003_item_is_active.py"
+    )
+    assert spec is not None and spec.loader is not None
+    item_migration = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(item_migration)
+
+    def add_column(table_name: str, column: Column[bool]) -> None:
+        migrated.tables[table_name].append_column(column)
+
+    monkeypatch.setattr(item_migration.op, "add_column", add_column)
+    item_migration.upgrade()
     dialect = postgresql.dialect()
     for name, expected in Base.metadata.tables.items():
         actual = migrated.tables[name]

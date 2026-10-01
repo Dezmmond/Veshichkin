@@ -25,10 +25,11 @@ def migration() -> ModuleType:
 
 def test_revision_chain(migration: ModuleType) -> None:
     script = ScriptDirectory.from_config(Config(str(BACKEND / "alembic.ini")))
-    assert script.get_heads() == ["0002_reference_data"]
+    assert script.get_heads() == ["0003_item_is_active"]
     assert migration.revision == "0002_reference_data"
     assert migration.down_revision == "0001_initial_schema"
     assert [revision.revision for revision in script.walk_revisions()] == [
+        "0003_item_is_active",
         "0002_reference_data",
         "0001_initial_schema",
     ]
