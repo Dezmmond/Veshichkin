@@ -31,3 +31,36 @@ Settings use the `VESHICHKIN_` prefix: `APPLICATION_NAME` (default `Veshichkin`)
 
 Database connection and pool wait timeouts are each 3 seconds; no connection retries
 are performed in the endpoint. Application startup does not connect to PostgreSQL.
+
+## API contract generation
+
+With backend and frontend dependencies installed, run:
+
+```bash
+cd frontend
+npm run api:generate
+```
+
+This exports FastAPI OpenAPI to `frontend/openapi.json` and generates
+`frontend/src/api/generated/schema.d.ts` with `openapi-typescript`.
+No running backend server or PostgreSQL is required. Regenerate after API changes;
+do not edit generated types manually.
+
+## Development
+
+Run FastAPI from the repository root in one terminal:
+
+```bash
+uv run --directory backend uvicorn veshichkin.main:app --reload
+```
+
+Run Vite in a second terminal:
+
+```bash
+cd frontend
+npm run dev
+```
+
+Vite proxies `/api` to `http://127.0.0.1:8000`. The typed browser client uses relative
+`/api/...` URLs on the current origin. Home shows a technical backend status using
+`/api/health`, which works without PostgreSQL. No backend CORS configuration is required.
