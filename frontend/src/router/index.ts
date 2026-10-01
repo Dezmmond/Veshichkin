@@ -7,6 +7,7 @@ import CategoryWriteView from '../views/CategoryWriteView.vue'
 import ItemDetailsView from '../views/ItemDetailsView.vue'
 import ItemWriteView from '../views/ItemWriteView.vue'
 import RevisionView from '../views/RevisionView.vue'
+import MeasurementProfileView from '../views/MeasurementProfileView.vue'
 import NotFoundView from '../views/NotFoundView.vue'
 
 export const routes: RouteRecordRaw[] = [
@@ -19,6 +20,7 @@ export const routes: RouteRecordRaw[] = [
   { path: '/catalog/items/:itemId', name: 'item-details', component: ItemDetailsView },
   { path: '/catalog/items/:itemId/edit', name: 'item-edit', component: ItemWriteView },
   { path: '/revision', name: 'revision', component: RevisionView },
+  { path: '/profile/measurements', name: 'measurements', component: MeasurementProfileView },
   { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFoundView },
 ]
 

@@ -259,3 +259,22 @@ a:focus-visible {
   border: 1px solid #ddd;
   border-radius: 0.25rem;
 }
+
+.measurement-profile dt {
+  font-weight: 600;
+}
+
+.measurement-profile dd {
+  margin: 0 0 0.75rem;
+}
+
+.measurement-profile pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.measurement-form .item-actions button[type="button"] {
+  background: #fff;
+  color: #174e8c;
+  border: 1px solid #ddd;
+}

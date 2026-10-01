@@ -10,7 +10,7 @@ import { apiClient } from './api/client'
 
 beforeEach(() => {
   vi.spyOn(apiClient, 'GET').mockImplementation(async (path) => ({
-    data: path === '/api/health' ? { status: 'ok' as const } : [],
+    data: path === '/api/health' ? { status: 'ok' as const } : path === '/api/profile/measurements' ? null : [],
     response: new Response(null, { status: 200 }),
   }))
 })
@@ -31,7 +31,7 @@ describe('application shell', () => {
     try {
       const navigation = wrapper.get('nav[aria-label="Основная навигация"]')
       expect(navigation.findAll('a').map((link) => [link.text(), link.attributes('href')])).toEqual([
-        ['Главная', '/'], ['Каталог', '/catalog'], ['Ревизия', '/revision'],
+        ['Главная', '/'], ['Каталог', '/catalog'], ['Мои замеры', '/profile/measurements'], ['Ревизия', '/revision'],
       ])
       expect(wrapper.get('h1').text()).toBe('Veshichkin')
       expect(navigation.get('a[href="/"]').attributes('aria-current')).toBe('page')
@@ -42,6 +42,17 @@ describe('application shell', () => {
       expect(navigation.get('a[href="/catalog"]').classes()).toContain('router-link-exact-active')
       expect(navigation.get('a[href="/catalog"]').attributes('aria-current')).toBe('page')
       expect(navigation.get('a[href="/"]').attributes('aria-current')).toBeUndefined()
+      await navigation.get('a[href="/profile/measurements"]').trigger('click')
+      await flushPromises()
+      expect(router.currentRoute.value.path).toBe('/profile/measurements')
+      expect(wrapper.get('h1').text()).toBe('Мои замеры')
+      expect(navigation.get('a[href="/profile/measurements"]').attributes('aria-current')).toBe('page')
+      await navigation.get('a[href="/revision"]').trigger('click')
+      await flushPromises()
+      expect(wrapper.get('h1').text()).toBe('Ревизия')
+      await navigation.get('a[href="/"]').trigger('click')
+      await flushPromises()
+      expect(wrapper.get('h1').text()).toBe('Veshichkin')
     } finally {
       wrapper.unmount()
       queryClient.clear()

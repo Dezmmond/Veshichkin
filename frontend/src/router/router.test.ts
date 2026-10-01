@@ -7,7 +7,7 @@ import { apiClient } from '../api/client'
 
 beforeEach(() => {
   vi.spyOn(apiClient, 'GET').mockImplementation(async (path) => ({
-    data: path === '/api/health' ? { status: 'ok' as const } : [],
+    data: path === '/api/health' ? { status: 'ok' as const } : path === '/api/profile/measurements' ? null : [],
     response: new Response(null, { status: 200 }),
   }))
 })
@@ -25,6 +25,7 @@ describe('routes', () => {
     ['/catalog/items/invalid', 'item-details', 'Вещь не найдена'],
     ['/catalog/items/invalid/edit', 'item-edit', 'Вещь не найдена'],
     ['/revision', 'revision', 'Ревизия'],
+    ['/profile/measurements', 'measurements', 'Мои замеры'],
     ['/unknown/nested-page', 'not-found', 'Страница не найдена'],
   ])('renders %s', async (path, name, heading) => {
     const router = createRouter({ history: createMemoryHistory(), routes })
