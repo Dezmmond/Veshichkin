@@ -1,0 +1,280 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+  color: #222;
+  background: #fff;
+}
+
+a {
+  color: #174e8c;
+}
+
+.app-layout {
+  width: 100%;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.app-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.app-navigation a {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.75rem;
+  text-decoration: none;
+  border-radius: 0.25rem;
+}
+
+.app-navigation .router-link-exact-active {
+  background: #e7eef7;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.app-content {
+  padding-top: 1rem;
+}
+
+h1 {
+  margin-top: 0;
+  font-size: 1.75rem;
+}
+
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: 1rem;
+  padding: 0.5rem;
+  background: #fff;
+  transform: translateY(-100%);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.category-links, .catalog-items, .catalog-breadcrumb ol {
+  list-style: none;
+  padding: 0;
+}
+
+.category-links a {
+  display: block;
+  min-height: 2.75rem;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+  overflow-wrap: anywhere;
+}
+
+.catalog-breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.catalog-breadcrumb li {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.catalog-breadcrumb li + li::before {
+  content: '/';
+  margin-right: 0.25rem;
+}
+
+.catalog-breadcrumb a {
+  display: inline-block;
+  padding: 0.5rem 0.25rem;
+  min-height: 2.75rem;
+}
+
+.catalog-item {
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+  overflow-wrap: anywhere;
+}
+
+.catalog-item h3 {
+  margin: 0 0 0.5rem;
+}
+
+.catalog-item dl {
+  margin: 0;
+}
+
+.catalog-item dl > div {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 0.5rem;
+}
+
+.catalog-item dt {
+  font-weight: 600;
+}
+
+.catalog-item dd {
+  margin: 0;
+  min-width: 0;
+}
+
+.item-form fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0 0 1rem;
+  min-width: 0;
+}
+
+.item-form label, .item-form summary {
+  display: block;
+  margin-top: 0.75rem;
+}
+
+.item-form input:not([type="checkbox"]), .item-form select, .item-form textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 2.75rem;
+  box-sizing: border-box;
+  padding: 0.5rem;
+  font: inherit;
+}
+
+.item-form textarea {
+  resize: vertical;
+}
+
+.item-form .item-choices label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  margin: 0;
+}
+
+.item-form summary {
+  min-height: 2.75rem;
+  padding: 0.5rem 0;
+  cursor: pointer;
+}
+
+.item-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.item-actions a, .item-actions button, .catalog-item h3 a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.5rem;
+  font: inherit;
+}
+
+.item-actions button {
+  background: #174e8c;
+  color: #fff;
+  border: 0;
+  border-radius: 0.25rem;
+}
+
+.item-actions button:disabled {
+  opacity: 0.65;
+}
+
+.item-details dd {
+  margin: 0 0 0.75rem;
+}
+
+.item-details dt {
+  font-weight: 600;
+}
+
+.item-details pre, .item-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.catalog-filters {
+  min-width: 0;
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+}
+
+.catalog-filters label, .catalog-filters select {
+  display: block;
+  width: 100%;
+}
+
+.catalog-filters select, .catalog-filters button, .management-action {
+  min-height: 2.75rem;
+  padding: 0.5rem;
+  font: inherit;
+  max-width: 100%;
+}
+
+.catalog-filters select {
+  margin-bottom: 0.75rem;
+  min-width: 0;
+}
+
+.confirmation, .category-deletion {
+  margin-top: 1.5rem;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+}
+
+.measurement-profile dt {
+  font-weight: 600;
+}
+
+.measurement-profile dd {
+  margin: 0 0 0.75rem;
+}
+
+.measurement-profile pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.measurement-form .item-actions button[type="button"] {
+  background: #fff;
+  color: #174e8c;
+  border: 1px solid #ddd;
+}

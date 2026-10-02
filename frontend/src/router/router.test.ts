@@ -1,0 +1,46 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
+import { mount } from '@vue/test-utils'
+import { RouterView, createMemoryHistory, createRouter } from 'vue-router'
+import { routes } from './index'
+import { apiClient } from '../api/client'
+
+beforeEach(() => {
+  vi.spyOn(apiClient, 'GET').mockImplementation(async (path) => ({
+    data: path === '/api/health' ? { status: 'ok' as const } : path === '/api/profile/measurements' ? null : [],
+    response: new Response(null, { status: 200 }),
+  }))
+})
+
+afterEach(() => vi.restoreAllMocks())
+
+describe('routes', () => {
+  it.each([
+    ['/', 'home', 'Veshichkin'],
+    ['/catalog', 'catalog', 'Каталог'],
+    ['/catalog/categories/invalid', 'category', 'Категория не найдена'],
+    ['/catalog/categories/new', 'category-create', 'Добавить категорию'],
+    ['/catalog/categories/invalid/edit', 'category-edit', 'Категория не найдена'],
+    ['/catalog/items/new', 'item-create', 'Добавить вещь'],
+    ['/catalog/items/invalid', 'item-details', 'Вещь не найдена'],
+    ['/catalog/items/invalid/edit', 'item-edit', 'Вещь не найдена'],
+    ['/revision', 'revision', 'Ревизия'],
+    ['/profile/measurements', 'measurements', 'Мои замеры'],
+    ['/unknown/nested-page', 'not-found', 'Страница не найдена'],
+  ])('renders %s', async (path, name, heading) => {
+    const router = createRouter({ history: createMemoryHistory(), routes })
+    await router.push(path)
+    await router.isReady()
+    const queryClient = new QueryClient()
+    const wrapper = mount(RouterView, {
+      global: { plugins: [router, [VueQueryPlugin, { queryClient }]] },
+    })
+    try {
+      expect(router.currentRoute.value.name).toBe(name)
+      expect(wrapper.get('h1').text()).toBe(heading)
+    } finally {
+      wrapper.unmount()
+      queryClient.clear()
+    }
+  })
+})

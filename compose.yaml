@@ -1,0 +1,36 @@
+services:
+  app:
+    image: veshichkin-app
+    build: .
+    environment:
+      VESHICHKIN_ENVIRONMENT: production
+      VESHICHKIN_STATIC_DIR: /app/static
+      # Local deployment defaults only; these are not production secret management.
+      VESHICHKIN_DATABASE_URL: postgresql+psycopg://veshichkin:veshichkin_dev_only@postgres:5432/veshichkin
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/ready', timeout=5)"]
+      interval: 5s
+      timeout: 6s
+      retries: 5
+      start_period: 10s
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: veshichkin
+      POSTGRES_USER: veshichkin
+      POSTGRES_PASSWORD: veshichkin_dev_only
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U veshichkin -d veshichkin"]
+      interval: 2s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  postgres_data:
